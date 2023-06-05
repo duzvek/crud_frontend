@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, Button, Text, StatusBar, TextInput, ToastAndroid, TouchableOpacity } from "react-native";
 
 import Inputs from "../Inputs/Inputs";
 import { BTN } from '../Global'
+import axios from "axios";
 
 const Login = ({ navigation, route }) => {
 
@@ -10,7 +11,25 @@ const Login = ({ navigation, route }) => {
     const [pass, setPass] = useState('')
 
     const check = () => {
-
+        if (user && pass) {
+            axios.post('https://80ac-49-149-68-98.ngrok-free.app/' + `api/2/login/`, {
+                username: user,
+                password: pass
+            })
+                .then((response) => {
+                    ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
+                    if (response.data.flag === 1) {
+                        setUser(''); setPass('')
+                        navigation.navigate('Profile', { id: response.data.id })
+                    }
+                })
+                .catch(() => {
+                    ToastAndroid.show("Server is not available!", ToastAndroid.SHORT)
+                })
+        }
+        else {
+            ToastAndroid.show('Missing Input!', ToastAndroid.SHORT)
+        }
     }
 
     return (
@@ -19,11 +38,11 @@ const Login = ({ navigation, route }) => {
             <View style={{ marginBottom: 100 }} />
             <Text style={{ fontSize: 25, fontWeight: 700, color: '#FFFFFF' }}>Login Page</Text>
             <View style={{ marginBottom: 100 }} />
-            <Inputs type={'user'} placeholder={'Enter Username'} iconColor={'#4E5457'} textState={user} setState={setUser}/>
+            <Inputs type={'user'} placeholder={'Enter Username'} iconColor={'#4E5457'} textState={user} setTextState={setUser} />
             <View style={{ marginBottom: 15 }} />
-            <Inputs type={'pass'} placeholder={'Enter Password'} iconColor={'#CF7575'} textState={pass} setState={setPass}/>
+            <Inputs type={'pass'} placeholder={'Enter Password'} iconColor={'#CF7575'} textState={pass} setTextState={setPass} />
             <View style={{ marginBottom: 50 }} />
-            <BTN title={'Log in'} func={check}/>
+            <BTN title={'Log in'} func={check} />
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <Text style={{ fontSize: 15, color: '#D8D8D8', fontWeight: 500 }}>No Account? create </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>

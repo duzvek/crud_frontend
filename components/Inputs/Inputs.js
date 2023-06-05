@@ -4,7 +4,7 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 
 
 
-const Inputs = ({ type, placeholder, iconColor, textState, setState }) => {
+const Inputs = ({ type, placeholder, iconColor, textState, setTextState }) => {
 
     const [eye, setEye] = useState(false)
 
@@ -19,7 +19,7 @@ const Inputs = ({ type, placeholder, iconColor, textState, setState }) => {
                     }
                 })()}
             </View>
-            <TextInput style={{ fontSize: 15, flex: 1, paddingRight: type === 'pass' ? 0 : 10, paddingLeft: 10 }} value={textState} placeholder={placeholder} placeholderTextColor={'#909090'} secureTextEntry={ eye ? false : true } onChange={setState}/>
+            <TextInput style={{ fontSize: 15, flex: 1, paddingRight: type === 'pass' ? 0 : 10, paddingLeft: 10 }} value={textState} placeholder={placeholder} placeholderTextColor={'#909090'} secureTextEntry={ type === 'pass' ? ( eye ? false : true ) : ( eye ? true : false ) } onChangeText={setTextState}/>
             {(() => {
                 switch (type) {
                     case "user": return null;
