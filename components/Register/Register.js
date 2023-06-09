@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Button, Text, StatusBar, TextInput, ToastAndroid, TouchableOpacity } from "react-native";
+import { View, Text, StatusBar, ToastAndroid, TouchableOpacity } from "react-native";
 
 import Inputs from "../Inputs/Inputs";
 import { BTN } from '../Global'
@@ -11,16 +11,21 @@ const Register = ({ navigation, route }) => {
     const [pass, setPass] = useState('')
     const [confirm, setConfirm] = useState('')
 
-    const check = () => {
+    const check = async () => {
         const trm = user.trim()
         if (trm && pass && confirm && pass == confirm) {
-            axios.post('https://80ac-49-149-68-98.ngrok-free.app/' + 'api/2/register', {
+            await axios.post('https://8260-49-149-68-98.ngrok-free.app/' + 'api/2/register', {
                 username: trm,
                 password: confirm
             })
                 .then((response) => {
-                    ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
-                    navigation.navigate('Login')
+                    if (response.status === 201) {
+                        ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
+                        navigation.navigate('Login')
+                    }
+                    else {
+                        ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
+                    }
                 })
                 .catch(() => {
                     ToastAndroid.show("Server is not available!", ToastAndroid.SHORT)

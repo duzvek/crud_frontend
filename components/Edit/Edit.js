@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Button, Text, StatusBar, TextInput, ToastAndroid, TouchableOpacity } from "react-native";
 
 import Inputs from "../Inputs/Inputs";
@@ -11,16 +11,26 @@ const Edit = ({ navigation, route }) => {
     const [pass, setPass] = useState('')
     const [confirm, setConfirm] = useState('')
 
-    const check = () => {
+
+    useEffect(() => {
+        setUser(route.params.username)
+    }, [])
+
+    const check = async () => {
         if (user && pass && confirm && pass == confirm) {
-            axios.put('https://80ac-49-149-68-98.ngrok-free.app/' + 'api/2/update', {
+            await axios.put('https://8260-49-149-68-98.ngrok-free.app/' + 'api/2/update', {
                 id: route.params.id,
                 username: user,
                 password: confirm
             })
                 .then((response) => {
-                    ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
-                    navigation.navigate('Profile', { id: route.params.id })
+                    if (response.data.flag === 1) {
+                        ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
+                        navigation.navigate('Profile', { id: route.params.id })
+                    }
+                    else {
+                        ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
+                    }
                 })
                 .catch(() => {
                     ToastAndroid.show("Server is not available!", ToastAndroid.SHORT)

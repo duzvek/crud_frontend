@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Button, Text, StatusBar, TextInput, ToastAndroid, TouchableOpacity } from "react-native";
+import { View, Text, StatusBar, ToastAndroid, TouchableOpacity } from "react-native";
 
 import Inputs from "../Inputs/Inputs";
 import { BTN } from '../Global'
@@ -10,9 +10,9 @@ const Login = ({ navigation, route }) => {
     const [user, setUser] = useState('')
     const [pass, setPass] = useState('')
 
-    const check = () => {
+    const check = async () => {
         if (user && pass) {
-            axios.post('https://80ac-49-149-68-98.ngrok-free.app/' + `api/2/login/`, {
+            await axios.post('https://8260-49-149-68-98.ngrok-free.app/' + `api/2/login/`, {
                 username: user,
                 password: pass
             })

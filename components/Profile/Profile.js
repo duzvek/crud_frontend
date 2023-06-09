@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
-import { View, Button, Text, StatusBar, TextInput, ToastAndroid, TouchableOpacity, Modal } from "react-native";
+import { View, Text, StatusBar, ToastAndroid, TouchableOpacity, Modal } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import Inputs from "../Inputs/Inputs";
-import { BTN } from '../Global'
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 
 const Profile = ({ navigation, route }) => {
 
+    const isFocused = useIsFocused()
     const [mdl, setMdl] = useState(false)
     const [uname, setUname] = useState('')
 
-    useEffect(() => {
-        axios.get('https://80ac-49-149-68-98.ngrok-free.app/' + `api/2/user/${route.params.id}`)
-            .then((response) => {
-                setUname(response.data.username)
-            })
-            .catch(() => {
-                ToastAndroid.show("Server is not available!", ToastAndroid.SHORT)
-            })
-    }, [])
 
-    const del = () => {
-        axios.delete('https://80ac-49-149-68-98.ngrok-free.app/' + 'api/2/delete', {
+
+    useEffect(() => {
+        if (isFocused) {
+            axios.get('https://8260-49-149-68-98.ngrok-free.app/' + `api/2/user/${route.params.id}`)
+                .then((response) => {
+                    setUname(response.data.username)
+                })
+                .catch(() => {
+                    ToastAndroid.show("Server is not available!", ToastAndroid.SHORT)
+                })
+        }
+    }, [isFocused])
+
+    const del = async () => {
+        await axios.delete('https://8260-49-149-68-98.ngrok-free.app/' + 'api/2/delete', {
             data: { id: route.params.id }
         })
             .then((response) => {
@@ -63,7 +67,7 @@ const Profile = ({ navigation, route }) => {
                 <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700 }}>Actions</Text>
             </View>
             <View style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row' }}>
-                <TouchableOpacity style={{ height: 45, backgroundColor: '#485054', elevation: 5, borderRadius: 5, width: '48%', justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Edit', { id: route.params.id })}>
+                <TouchableOpacity style={{ height: 45, backgroundColor: '#485054', elevation: 5, borderRadius: 5, width: '48%', justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Edit', { id: route.params.id, username: uname })}>
                     <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: 700 }}>Edit</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ height: 45, backgroundColor: '#BE6F6F', elevation: 5, borderRadius: 5, width: '48%', justifyContent: 'center', alignItems: 'center' }} onPress={() => setMdl(true)}>
